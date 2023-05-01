@@ -116,6 +116,7 @@ class Aptabase private constructor() {
     }
 
   companion object {
+    @JvmStatic
     val shared = Aptabase()
   }
 }
