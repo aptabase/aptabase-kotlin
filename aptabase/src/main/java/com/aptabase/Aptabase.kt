@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.Executors
 
 class Aptabase private constructor() {
-  private val SDK_VERSION = "aptabase-kotlin@0.0.1"
+  private val SDK_VERSION = "aptabase-kotlin@0.0.2"
   private val SESSION_TIMEOUT: Long = TimeUnit.HOURS.toMillis(1)
   private var appKey: String? = null
   private var sessionId = UUID.randomUUID()
@@ -117,6 +117,6 @@ class Aptabase private constructor() {
 
   companion object {
     @JvmStatic
-    val shared = Aptabase()
+    val instance = Aptabase()
   }
 }

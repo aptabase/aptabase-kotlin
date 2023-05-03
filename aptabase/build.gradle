@@ -47,7 +47,7 @@ publishing {
         release(MavenPublication) {
             groupId = 'com.aptabase'
             artifactId = 'aptabase'
-            version = '0.0.0'
+            version = '0.0.2'
 
             afterEvaluate {
                 from components.release

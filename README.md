@@ -6,11 +6,22 @@ Instrument your apps with Aptabase, an Open Source, Privacy-First and Simple Ana
 
 ## Install
 
-Add the following dependency to your app's build.gradle file:
+Aptabase SDK is available through JitPack, to install it add the following line repository to your root build.gradle file:
+
+```gradle
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+And then add the following dependency:
 
 ```gradle
 dependencies {
-    implementation 'com.aptabase:aptabase:0.0.1'
+    implementation 'com.github.aptabase:aptabase-kotlin:0.0.2'
 }
 ```
 
@@ -27,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // ...
         val context = this
-        Aptabase.shared.initialize(context, "<api-key>")
+        Aptabase.instance.initialize(context, "<YOUR_APP_KEY>"); // 👈 this is where you enter your App Key
     }
 }
 ```
@@ -37,8 +48,8 @@ Afterwards you can start tracking events with `trackEvent`:
 ```kotlin
 import com.aptabase.Aptabase
 
-Aptabase.shared.trackEvent("connect_click"); // An event with no properties
-Aptabase.shared.trackEvent("play_music", mapOf<String, Any>( // An event with a custom property
+Aptabase.instance.trackEvent("connect_click"); // An event with no properties
+Aptabase.instance.trackEvent("play_music", mapOf<String, Any>( // An event with a custom property
         "name" to "here_comes_the_sun" )
     ) 
 ```

@@ -12,12 +12,12 @@ class MainActivity : AppCompatActivity() {
 
         val initButton: Button = findViewById(R.id.initButton)
         initButton.setOnClickListener {
-            Aptabase.shared.initialize(this, "<api-key>")
+            Aptabase.instance.initialize(this, "<api-key>")
         }
 
         val trackButton: Button = findViewById(R.id.trackButton)
         trackButton.setOnClickListener {
-            Aptabase.shared.trackEvent("connect_click")
+            Aptabase.instance.trackEvent("connect_click")
         }
 
         val trackPropertyButton: Button = findViewById(R.id.trackPropertyButton)
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             val map = mapOf<String, Any>(
                 "with_love_from" to "NativeScript"
             )
-            Aptabase.shared.trackEvent("hello", map)
+            Aptabase.instance.trackEvent("hello", map)
         }
     }
 }
