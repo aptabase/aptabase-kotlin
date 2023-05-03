@@ -21,7 +21,7 @@ And then add the following dependency:
 
 ```gradle
 dependencies {
-    implementation 'com.github.aptabase:aptabase-kotlin:0.0.2'
+    implementation 'com.github.aptabase:aptabase-kotlin:0.0.3'
 }
 ```
 

@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.Executors
 
 class Aptabase private constructor() {
-  private val SDK_VERSION = "aptabase-kotlin@0.0.2"
+  private val SDK_VERSION = "aptabase-kotlin@0.0.3"
   private val SESSION_TIMEOUT: Long = TimeUnit.HOURS.toMillis(1)
   private var appKey: String? = null
   private var sessionId = UUID.randomUUID()

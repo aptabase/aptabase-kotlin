@@ -2,6 +2,8 @@ package com.aptabase
 
 import android.content.Context
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PackageInfoFlags
 import android.os.Build
 import java.util.*
 
@@ -13,6 +15,7 @@ data class EnvironmentInfo(
     var appBuildNumber: String = ""
 ) {
     companion object {
+        @Suppress("DEPRECATION")
         fun get(context: Context): EnvironmentInfo {
             val packageManager = context.packageManager
             val packageInfo = packageManager.getPackageInfo(context.packageName, 0)
@@ -20,7 +23,6 @@ data class EnvironmentInfo(
             val appBuildNumber = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 packageInfo.longVersionCode.toString()
             } else {
-                @Suppress("DEPRECATION")
                 packageInfo.versionCode.toString()
             }
 
@@ -29,7 +31,7 @@ data class EnvironmentInfo(
                 osVersion = Build.VERSION.RELEASE ?: "",
                 locale = Locale.getDefault().language,
                 appVersion = appVersion ?: "",
-                appBuildNumber = appBuildNumber ?: ""
+                appBuildNumber = appBuildNumber
             )
         }
     }
