@@ -2,10 +2,6 @@
 
 # Kotlin SDK for Aptabase
 
-<!-- [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Faptabase%2Faptabase-swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/aptabase/aptabase-swift)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Faptabase%2Faptabase-swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/aptabase/aptabase-swift) -->
-
-
 Instrument your apps with Aptabase, an Open Source, Privacy-First and Simple Analytics for Mobile, Desktop and Web Apps.
 
 ## Install
