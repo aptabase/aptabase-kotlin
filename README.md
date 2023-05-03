@@ -1,27 +1,19 @@
 ![Aptabase](https://aptabase.com/og.png)
 
+> **Warning**
+> This package is still in progress and not yet published to any Maven repository.
+
 # Kotlin SDK for Aptabase
 
 Instrument your apps with Aptabase, an Open Source, Privacy-First and Simple Analytics for Mobile, Desktop and Web Apps.
 
 ## Install
 
-Aptabase SDK is available through JitPack, to install it add the following line repository to your root build.gradle file:
-
-```gradle
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
-```
-
-And then add the following dependency:
+Add the following dependency to your app `build.gradle` file:
 
 ```gradle
 dependencies {
-    implementation 'com.github.aptabase:aptabase-kotlin:0.0.3'
+    implementation 'com.aptabase:aptabase:0.0.3'
 }
 ```
 
