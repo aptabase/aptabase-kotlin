@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'maven-publish'
 }
 
 android {
@@ -11,6 +10,8 @@ android {
     defaultConfig {
         minSdk 16
         targetSdk 33
+        versionCode VERSION_CODE.toInteger()
+        versionName VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -42,16 +43,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
-publishing {
-    publications {
-        gpr(MavenPublication) {
-            groupId = 'com.aptabase'
-            artifactId = 'aptabase'
-            version = '0.0.3'
-
-            afterEvaluate {
-                from components.release
-            }
-        }
-    }
-}
+apply plugin: "com.vanniktech.maven.publish"
