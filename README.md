@@ -1,18 +1,16 @@
 ![Aptabase](https://aptabase.com/og.png)
 
-> **Warning**
-> This package is still in progress and not yet published to any Maven repository.
-
 # Kotlin SDK for Aptabase
 
 Instrument your apps with Aptabase, an Open Source, Privacy-First and Simple Analytics for Mobile, Desktop and Web Apps.
 
 ## Install
 
-Add the following dependency to your app `build.gradle` file:
+The SDK is available on Maven Central, so you can install it on your Android apps by adding the following to your `build.gradle` file:
 
 ```gradle
 dependencies {
+    ...
     implementation 'com.aptabase:aptabase:0.0.3'
 }
 ```
@@ -29,8 +27,7 @@ import com.aptabase.Aptabase
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // ...
-        val context = this
-        Aptabase.instance.initialize(context, "<YOUR_APP_KEY>"); // 👈 this is where you enter your App Key
+        Aptabase.instance.initialize(this, "<YOUR_APP_KEY>"); // 👈 this is where you enter your App Key
     }
 }
 ```
