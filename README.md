@@ -11,7 +11,7 @@ The SDK is available on Maven Central, so you can install it on your Android app
 ```gradle
 dependencies {
     ...
-    implementation 'com.aptabase:aptabase:0.0.3'
+    implementation 'com.aptabase:aptabase:0.0.5'
 }
 ```
 
