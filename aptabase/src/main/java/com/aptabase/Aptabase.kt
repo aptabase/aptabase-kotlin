@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Build
 import org.json.JSONObject
 import java.io.BufferedWriter
+import java.io.IOException
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
+import java.net.MalformedURLException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -82,24 +84,34 @@ class Aptabase private constructor() {
           )
 
           threadPool.execute {
-            (apiURL.openConnection() as? HttpURLConnection)?.apply {
-              requestMethod = "POST"
-              setRequestProperty("App-Key", appKey)
-              setRequestProperty("Content-Type", "application/json")
+            try {
+              (apiURL.openConnection() as? HttpURLConnection)?.apply {
+                requestMethod = "POST"
+                setRequestProperty("App-Key", appKey)
+                setRequestProperty("Content-Type", "application/json")
 
-              doOutput = true
-              BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
-                writer.write(body.toString())
+                doOutput = true
+                BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
+                  writer.write(body.toString())
+                }
+
+                val responseCode = responseCode
+                if (responseCode >= 300) {
+                  println(
+                    "trackEvent failed with status code $responseCode: ${
+                      inputStream.bufferedReader().use { it.readText() }
+                    }"
+                  )
+                }
+
+                disconnect()
               }
-
-              val responseCode = responseCode
-              if (responseCode >= 300) {
-                println(
-                  "trackEvent failed with status code $responseCode: ${inputStream.bufferedReader().use { it.readText() }}"
-                )
-              }
-
-              disconnect()
+            } catch (e: MalformedURLException) {
+              println("Malformed URL: ${e.message}")
+            } catch (e: IOException) {
+              println("Connection Error: ${e.message}")
+            } catch (e: Exception) {
+              println("Unexpected exception: ${e.message}")
             }
           }
         }
