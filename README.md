@@ -37,10 +37,15 @@ Afterwards you can start tracking events with `trackEvent`:
 ```kotlin
 import com.aptabase.Aptabase
 
-Aptabase.instance.trackEvent("connect_click"); // An event with no properties
-Aptabase.instance.trackEvent("play_music", mapOf<String, Any>( // An event with a custom property
-        "name" to "here_comes_the_sun" )
-    ) 
+// An event with no properties
+Aptabase.instance.trackEvent("connect_click"); 
+
+// An event with a custom property
+Aptabase.instance.trackEvent("play_music", 
+    mapOf<String, Any>(
+        "name" to "here_comes_the_sun" 
+    )
+) 
 ```
 
 A few important notes:
