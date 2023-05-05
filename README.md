@@ -38,7 +38,7 @@ Afterwards you can start tracking events with `trackEvent`:
 import com.aptabase.Aptabase
 
 // An event with no properties
-Aptabase.instance.trackEvent("connect_click"); 
+Aptabase.instance.trackEvent("connect_click")
 
 // An event with a custom property
 Aptabase.instance.trackEvent("play_music", 
