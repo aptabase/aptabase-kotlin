@@ -26,7 +26,7 @@ class Aptabase private constructor() {
   private var sessionId = UUID.randomUUID()
   private var env: EnvironmentInfo? = null
   private var lastTouched = Date()
-  private var apiURL: URL? = null
+  private var apiURL: String? = null
   private val threadPool = Executors.newFixedThreadPool(5)
 
   init {
@@ -85,7 +85,8 @@ class Aptabase private constructor() {
 
           threadPool.execute {
             try {
-              (apiURL.openConnection() as? HttpURLConnection)?.apply {
+              val url = URL(apiURL)
+              (url.openConnection() as? HttpURLConnection)?.apply {
                 requestMethod = "POST"
                 setRequestProperty("App-Key", appKey)
                 setRequestProperty("Content-Type", "application/json")
@@ -119,7 +120,7 @@ class Aptabase private constructor() {
     }
   }
 
-  private fun getApiUrl(region: String, opts: InitOptions?): URL? {
+  private fun getApiUrl(region: String, opts: InitOptions?): String? {
     var baseURL = hosts[region] ?: error("Region not found")
     if (region == "SH") {
       val host = opts?.host ?: run {
@@ -129,7 +130,7 @@ class Aptabase private constructor() {
       baseURL = host
     }
 
-    return URL("$baseURL/api/v0/event")
+    return "$baseURL/api/v0/event"
   }
 
   private val dateFormatter: SimpleDateFormat
