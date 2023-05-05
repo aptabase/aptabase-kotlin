@@ -15,7 +15,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.Executors
 
-class InitOptions(val host: String? = null)
+data class InitOptions(val host: String? = null)
 
 class Aptabase private constructor() {
   private val SDK_VERSION = "aptabase-kotlin@0.0.5"
