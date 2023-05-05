@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Build
 import org.json.JSONObject
 import java.io.BufferedWriter
+import java.io.IOException
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
+import java.net.MalformedURLException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -15,8 +17,10 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.Executors
 
+data class InitOptions(val host: String? = null)
+
 class Aptabase private constructor() {
-  private val SDK_VERSION = "aptabase-kotlin@0.0.3"
+  private val SDK_VERSION = "aptabase-kotlin@0.0.5"
   private val SESSION_TIMEOUT: Long = TimeUnit.HOURS.toMillis(1)
   private var appKey: String? = null
   private var sessionId = UUID.randomUUID()
@@ -31,24 +35,22 @@ class Aptabase private constructor() {
     })
   }
 
-  private val regions =
+  private val hosts =
     mapOf(
       "US" to "https://us.aptabase.com",
       "EU" to "https://eu.aptabase.com",
-      "DEV" to "http://localhost:3000"
+      "DEV" to "http://localhost:3000",
+      "SH" to ""
     )
 
-  fun initialize(context: Context, appKey: String) {
+  fun initialize(context: Context, appKey: String, opts: InitOptions? = null) {
     val parts = appKey.split("-")
-    if (parts.size != 3) {
+    if (parts.size != 3 || !hosts.containsKey(parts[1])) {
       println("The Aptabase App Key $appKey is invalid. Tracking will be disabled.")
       return
     }
 
-    val region = parts[1]
-    val baseURL = regions[region] ?: regions["DEV"]!!
-
-    apiURL = "$baseURL/api/v0/event"
+    apiURL = getApiUrl(parts[1], opts)
     this.appKey = appKey
     env = EnvironmentInfo.get(context)
   }
@@ -82,30 +84,53 @@ class Aptabase private constructor() {
           )
 
           threadPool.execute {
-            val url = URL(apiURL)
-            (url.openConnection() as? HttpURLConnection)?.apply {
-              requestMethod = "POST"
-              setRequestProperty("App-Key", appKey)
-              setRequestProperty("Content-Type", "application/json")
+            try {
+              val url = URL(apiURL)
+              (url.openConnection() as? HttpURLConnection)?.apply {
+                requestMethod = "POST"
+                setRequestProperty("App-Key", appKey)
+                setRequestProperty("Content-Type", "application/json")
 
-              doOutput = true
-              BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
-                writer.write(body.toString())
+                doOutput = true
+                BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
+                  writer.write(body.toString())
+                }
+
+                val responseCode = responseCode
+                if (responseCode >= 300) {
+                  println(
+                    "trackEvent failed with status code $responseCode: ${
+                      inputStream.bufferedReader().use { it.readText() }
+                    }"
+                  )
+                }
+
+                disconnect()
               }
-
-              val responseCode = responseCode
-              if (responseCode >= 300) {
-                println(
-                  "trackEvent failed with status code $responseCode: ${inputStream.bufferedReader().use { it.readText() }}"
-                )
-              }
-
-              disconnect()
+            } catch (e: MalformedURLException) {
+              println("Malformed URL: ${e.message}")
+            } catch (e: IOException) {
+              println("Connection Error: ${e.message}")
+            } catch (e: Exception) {
+              println("Unexpected exception: ${e.message}")
             }
           }
         }
       }
     }
+  }
+
+  private fun getApiUrl(region: String, opts: InitOptions?): String? {
+    var baseURL = hosts[region] ?: error("Region not found")
+    if (region == "SH") {
+      val host = opts?.host ?: run {
+        println("Host parameter must be defined when using Self-Hosted App Key. Tracking will be disabled.")
+        return null
+      }
+      baseURL = host
+    }
+
+    return "$baseURL/api/v0/event"
   }
 
   private val dateFormatter: SimpleDateFormat
