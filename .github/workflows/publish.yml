@@ -1,11 +1,6 @@
 
 name: Publish
-on:
-  workflow_dispatch:
-    inputs:
-      versionName:
-        description: 'Version Name'
-        required: true
+on: [workflow_dispatch]
 
 jobs:
   publish:
@@ -35,7 +30,6 @@ jobs:
           ./gradlew publish --no-daemon --no-parallel
           ./gradlew closeAndReleaseRepository
         env:
-          ORG_GRADLE_PROJECT_VERSION_NAME: ${{ github.event.inputs.versionName }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSWORD }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
