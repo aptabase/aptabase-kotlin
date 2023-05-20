@@ -20,7 +20,7 @@ import java.util.concurrent.Executors
 data class InitOptions(val host: String? = null)
 
 class Aptabase private constructor() {
-  private val SDK_VERSION = "aptabase-kotlin@0.0.5"
+  private val SDK_VERSION = "aptabase-kotlin@0.0.6"
   private val SESSION_TIMEOUT: Long = TimeUnit.HOURS.toMillis(1)
   private var appKey: String? = null
   private var sessionId = UUID.randomUUID()
@@ -66,12 +66,13 @@ class Aptabase private constructor() {
 
           lastTouched = now
 
-          val body: JSONObject = JSONObject(
+          val body = JSONObject(
             mapOf(
               "timestamp" to dateFormatter.format(Date()),
               "sessionId" to sessionId.toString().lowercase(),
               "eventName" to eventName,
               "systemProps" to mapOf(
+                "isDebug" to env.isDebug,
                 "osName" to "Android",
                 "osVersion" to Build.VERSION.RELEASE,
                 "locale" to env.locale,

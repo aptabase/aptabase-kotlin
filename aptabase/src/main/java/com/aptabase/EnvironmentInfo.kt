@@ -1,13 +1,12 @@
 package com.aptabase
 
 import android.content.Context
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.content.pm.PackageManager.PackageInfoFlags
+import android.content.pm.ApplicationInfo
 import android.os.Build
 import java.util.*
 
 data class EnvironmentInfo(
+    var isDebug: Boolean = false,
     var osName: String = "",
     var osVersion: String = "",
     var locale: String = "",
@@ -17,6 +16,7 @@ data class EnvironmentInfo(
     companion object {
         @Suppress("DEPRECATION")
         fun get(context: Context): EnvironmentInfo {
+            var isDebug = 0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
             val packageManager = context.packageManager
             val packageInfo = packageManager.getPackageInfo(context.packageName, 0)
             val appVersion = packageInfo.versionName
@@ -27,6 +27,7 @@ data class EnvironmentInfo(
             }
 
             return EnvironmentInfo(
+                isDebug = isDebug,
                 osName = "Android",
                 osVersion = Build.VERSION.RELEASE ?: "",
                 locale = Locale.getDefault().language,
