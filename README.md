@@ -4,54 +4,47 @@
 
 Instrument your apps with Aptabase, an Open Source, Privacy-First and, Simple Analytics for Mobile, Desktop and, Web Apps.
 
-## Install
+## Setup
 
-The SDK is available on Maven Central, so you can install it on your Android apps by adding the following to your `build.gradle` file:
+Add the dependency below to your module's `build.gradle.kts` file:
 
-```gradle
-dependencies {
-    ...
-    implementation 'com.aptabase:aptabase:0.0.6'
+```kotlin
+    implementation("com.aptabase:aptabase:0.0.6")
+```
+
+If you don't already have an `Application` class, create one. Then, initialize the Aptabase object inside your application class:
+
+```kotlin
+private const val APTABASE_KEY = "YOUR_APP_KEY"
+// Put the app key provided by Aptabase as the value of APTABASE_KEY
+// It is a unique identifier for you application
+
+class MyApplication : Application() {
+
+   override fun onCreate() {
+      super.onCreate()
+      // Initialize Aptabase object
+      Aptabase.instance.initialize(applicationContext, APTABASE_KEY)
+      // OPTIONAL: Track app launch on startup
+      Aptabase.instance.trackEvent("app_started")
+   }
+
 }
 ```
+
+To get your `App Key`, you can find it inside `Instructions` tab from the left side menu of the Aptabase website.
 
 ## Usage
 
-First, you need to get your `App Key` from Aptabase, you can find it in the `Instructions` menu on the left side menu.
-
-Initialized the SDK as early as possible in your app, for example:
+You are in charge of what information is sent! Therefore, no events are tracked automatically and you must register trackers manually. To do so, simply use the `trackEvent` function provided by the `Aptabase` object:
 
 ```kotlin
-import com.aptabase.Aptabase
-
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        // ...
-        Aptabase.instance.initialize(this, "<YOUR_APP_KEY>"); // 👈 this is where you enter your App Key
-    }
-}
+// Event with no properties
+Aptabase.instance.trackEvent("event_name")
+// Event with a custom property
+Aptabase.instance.trackEvent("screen_view",
+   mapOf<String, Any>(
+      "name" to "Settings" // Only <String> and <Int> values are allowed for custom properties
+   )
+)
 ```
-
-Afterward, you can start tracking events with `trackEvent`:
-
-```kotlin
-import com.aptabase.Aptabase
-
-// An event with no properties
-Aptabase.instance.trackEvent("app_started")
-
-// An event with a custom property
-Aptabase.instance.trackEvent("screen_view", 
-    mapOf<String, Any>(
-        "name" to "Settings" 
-    )
-) 
-```
-
-A few important notes:
-
-1. The SDK will automatically enhance the event with some useful information, like the OS, the app version, and other things.
-2. You're in control of what gets sent to Aptabase. This SDK does not automatically track any events, you need to call `trackEvent` manually.
-   - Because of this, it's generally recommended to at least track an event at startup
-3. The `trackEvent` function is a non-blocking operation as it runs in the background.
-4. Only strings and numbers values are allowed on custom properties
