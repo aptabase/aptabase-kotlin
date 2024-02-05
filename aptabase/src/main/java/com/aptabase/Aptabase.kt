@@ -78,7 +78,8 @@ class Aptabase private constructor() {
                 "locale" to env.locale,
                 "appVersion" to env.appVersion,
                 "appBuildNumber" to env.appBuildNumber,
-                "sdkVersion" to SDK_VERSION
+                "sdkVersion" to SDK_VERSION,
+                "deviceModel" to env.deviceModel
               ),
               "props" to props
             )
