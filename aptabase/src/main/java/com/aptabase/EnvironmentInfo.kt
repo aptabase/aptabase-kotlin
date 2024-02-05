@@ -11,12 +11,13 @@ data class EnvironmentInfo(
     var osVersion: String = "",
     var locale: String = "",
     var appVersion: String = "",
-    var appBuildNumber: String = ""
+    var appBuildNumber: String = "",
+    var deviceModel: String = ""
 ) {
     companion object {
         @Suppress("DEPRECATION")
         fun get(context: Context): EnvironmentInfo {
-            var isDebug = 0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
+            val isDebug = 0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
             val packageManager = context.packageManager
             val packageInfo = packageManager.getPackageInfo(context.packageName, 0)
             val appVersion = packageInfo.versionName
@@ -25,6 +26,7 @@ data class EnvironmentInfo(
             } else {
                 packageInfo.versionCode.toString()
             }
+            val deviceModel = Build.MODEL
 
             return EnvironmentInfo(
                 isDebug = isDebug,
@@ -32,7 +34,8 @@ data class EnvironmentInfo(
                 osVersion = Build.VERSION.RELEASE ?: "",
                 locale = Locale.getDefault().language,
                 appVersion = appVersion ?: "",
-                appBuildNumber = appBuildNumber
+                appBuildNumber = appBuildNumber,
+                deviceModel = deviceModel
             )
         }
     }
