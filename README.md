@@ -6,10 +6,23 @@ Instrument your apps with Aptabase, an Open Source, Privacy-First and, Simple An
 
 ## Setup
 
-Add the dependency below to your module's `build.gradle.kts` file:
+Add the JitPack repository in `settings.gradle.kts` file:
 
 ```kotlin
-    implementation("com.aptabase:aptabase:0.0.6")
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://www.jitpack.io") } // JitPack repository
+    }
+}
+```
+
+Add the dependency to your module-level `build.gradle.kts` file:
+
+```kotlin
+    implementation("com.github.aptabase:aptabase-kotlin:0.0.7")
 ```
 
 If you don't already have an `Application` class, create one. Then, initialize the Aptabase object inside your application class:
