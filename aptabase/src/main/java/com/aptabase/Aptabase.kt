@@ -20,7 +20,7 @@ import java.util.concurrent.Executors
 data class InitOptions(val host: String? = null)
 
 class Aptabase private constructor() {
-  private val SDK_VERSION = "aptabase-kotlin@0.0.6"
+  private val SDK_VERSION = "aptabase-kotlin@0.0.7"
   private val SESSION_TIMEOUT: Long = TimeUnit.HOURS.toMillis(1)
   private var appKey: String? = null
   private var sessionId = UUID.randomUUID()
