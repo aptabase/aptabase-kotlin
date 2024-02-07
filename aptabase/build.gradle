@@ -50,7 +50,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = 'com.aptabase'
-                artifactId = 'Aptabase-Android'
+                artifactId = 'aptabase-kotlin'
                 version = '0.0.7'
             }
         }
