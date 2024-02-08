@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 Add the dependency to your module-level `build.gradle.kts` file:
 
 ```kotlin
-    implementation("com.github.aptabase:aptabase-kotlin:0.0.7")
+    implementation("com.github.aptabase:aptabase-kotlin:0.0.8")
 ```
 
 If you don't already have an `Application` class, create one. Then, initialize the Aptabase object inside your application class:
