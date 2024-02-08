@@ -1,3 +1,7 @@
+## 0.0.8
+
+* Fix JitPack build
+
 ## 0.0.7
 
 * Migration to JitPack.io
