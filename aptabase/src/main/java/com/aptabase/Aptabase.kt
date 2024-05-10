@@ -43,7 +43,8 @@ class Aptabase private constructor() {
       "SH" to ""
     )
 
-  fun initialize(context: Context, appKey: String, opts: InitOptions? = null) {
+  fun initialize(context: Context, appKey: String, opts: InitOptions? = null, trackingEnabled: Boolean = true) {
+    if (!trackingEnabled) return
     val parts = appKey.split("-")
     if (parts.size != 3 || !hosts.containsKey(parts[1])) {
       println("The Aptabase App Key $appKey is invalid. Tracking will be disabled.")
@@ -55,7 +56,8 @@ class Aptabase private constructor() {
     env = EnvironmentInfo.get(context)
   }
 
-  fun trackEvent(eventName: String, props: Map<String, Any> = emptyMap<String, Any>()) {
+  fun trackEvent(eventName: String, props: Map<String, Any> = emptyMap(), trackingEnabled: Boolean = true) {
+    if (!trackingEnabled) return
     appKey?.let { appKey ->
       env?.let { env ->
         apiURL?.let { apiURL ->
