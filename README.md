@@ -61,3 +61,5 @@ Aptabase.instance.trackEvent("screen_view",
    )
 )
 ```
+
+For AI/LLM integration instructions, see [llms.txt](./llms.txt)

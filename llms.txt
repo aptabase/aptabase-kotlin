@@ -1,0 +1,104 @@
+# Aptabase — Kotlin SDK for Android
+
+> Open-source, privacy-first analytics SDK for Android apps. GDPR-compliant, no cookies, no personal data collection.
+
+Package: `com.github.aptabase:aptabase-kotlin`
+Install: `implementation("com.github.aptabase:aptabase-kotlin:0.0.8")`
+Repo: https://github.com/aptabase/aptabase-kotlin
+
+## Overview
+
+Aptabase is an open-source, privacy-first analytics platform. This SDK integrates Aptabase into Android apps using Kotlin or Java.
+
+- Get your App Key from the Aptabase dashboard (Settings > Instructions)
+- App keys follow the format `A-EU-*` (European) or `A-US-*` (US)
+- Only String and Int values are allowed as custom property values
+- All tracking is non-blocking and runs on a background thread pool
+- No events are tracked automatically — you must call trackEvent manually
+
+## Installation
+
+Add the JitPack repository in your `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://www.jitpack.io") }
+    }
+}
+```
+
+Add the dependency in your module-level `build.gradle.kts`:
+
+```kotlin
+implementation("com.github.aptabase:aptabase-kotlin:0.0.8")
+```
+
+## Initialization
+
+Initialize in your `Application` class:
+
+```kotlin
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        Aptabase.instance.initialize(applicationContext, "A-EU-1234567890")
+    }
+}
+```
+
+For self-hosted instances, pass `InitOptions`:
+
+```kotlin
+Aptabase.instance.initialize(
+    applicationContext,
+    "A-SH-1234567890",
+    InitOptions(host = "https://your-self-hosted-instance.com")
+)
+```
+
+## Track Events
+
+```kotlin
+Aptabase.instance.trackEvent("app_started")
+Aptabase.instance.trackEvent("screen_view")
+```
+
+## Track Events with Properties
+
+```kotlin
+Aptabase.instance.trackEvent("screen_view",
+    mapOf(
+        "name" to "Settings",
+        "section" to "account"
+    )
+)
+
+Aptabase.instance.trackEvent("purchase_completed",
+    mapOf(
+        "item" to "Premium Plan",
+        "price" to 9
+    )
+)
+```
+
+## Configuration
+
+- `InitOptions(host: String?)` — set `host` for self-hosted Aptabase instances. Required when using `A-SH-*` app keys.
+- Sessions auto-rotate after 1 hour of inactivity.
+- Events are dispatched on a background thread pool (5 threads).
+
+## Platform Notes
+
+- Android only (uses `android.content.Context` for initialization)
+- Requires an `Application` subclass for initialization
+- Uses `HttpURLConnection` for network requests (no external HTTP dependencies)
+- Debug mode is detected automatically from `ApplicationInfo.FLAG_DEBUGGABLE`
+- Collects only: OS version, locale, app version, build number, device model
+
+## Cross-Discovery
+
+For all Aptabase SDKs and documentation, see: https://aptabase.com/llms.txt
