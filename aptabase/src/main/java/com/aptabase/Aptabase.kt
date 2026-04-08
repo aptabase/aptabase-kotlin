@@ -17,7 +17,11 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.Executors
 
-data class InitOptions(val host: String? = null)
+data class InitOptions(
+    val host: String? = null,
+    val trackingMode: TrackingMode = TrackingMode.readFromEnvironment,
+    val appVersion: String? = null
+)
 
 class Aptabase private constructor() {
   private val SDK_VERSION = "aptabase-kotlin@0.0.8"
@@ -53,6 +57,12 @@ class Aptabase private constructor() {
     apiURL = getApiUrl(parts[1], opts)
     this.appKey = appKey
     env = EnvironmentInfo.get(context)
+
+    if (opts?.trackingMode != null && opts.trackingMode != TrackingMode.readFromEnvironment) {
+      env?.isDebug = opts.trackingMode == TrackingMode.asDebug
+    }
+
+    opts?.appVersion?.let { env?.appVersion = it }
   }
 
   fun trackEvent(eventName: String, props: Map<String, Any> = emptyMap<String, Any>()) {

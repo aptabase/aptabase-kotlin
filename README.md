@@ -45,6 +45,20 @@ class MyApplication : Application() {
 }
 ```
 
+You can also pass options to customize behavior:
+
+```kotlin
+Aptabase.instance.initialize(applicationContext, APTABASE_KEY, InitOptions(
+    host = "https://your-self-hosted-instance.com",  // For self-hosted Aptabase
+    trackingMode = TrackingMode.asRelease,            // Force release mode
+    appVersion = "2.0.0"                              // Override the app version
+))
+```
+
+- `host` — Custom server URL for self-hosted Aptabase instances (required for `A-SH-*` app keys)
+- `trackingMode` — `TrackingMode.readFromEnvironment` (default), `TrackingMode.asDebug`, or `TrackingMode.asRelease`
+- `appVersion` — Override the app version reported with events (default: read from the app package info)
+
 To get your `App Key`, you can find it inside `Instructions` tab from the left side menu of the Aptabase website.
 
 ## Usage
