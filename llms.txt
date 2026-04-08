@@ -3,7 +3,7 @@
 > Open-source, privacy-first analytics SDK for Android apps. GDPR-compliant, no cookies, no personal data collection.
 
 Package: `com.github.aptabase:aptabase-kotlin`
-Install: `implementation("com.github.aptabase:aptabase-kotlin:0.0.8")`
+Install: `implementation("com.github.aptabase:aptabase-kotlin:0.0.9")`
 Repo: https://github.com/aptabase/aptabase-kotlin
 
 ## Overview
@@ -34,7 +34,7 @@ dependencyResolutionManagement {
 Add the dependency in your module-level `build.gradle.kts`:
 
 ```kotlin
-implementation("com.github.aptabase:aptabase-kotlin:0.0.8")
+implementation("com.github.aptabase:aptabase-kotlin:0.0.9")
 ```
 
 ## Initialization

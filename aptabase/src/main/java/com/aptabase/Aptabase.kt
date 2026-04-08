@@ -24,7 +24,7 @@ data class InitOptions(
 )
 
 class Aptabase private constructor() {
-  private val SDK_VERSION = "aptabase-kotlin@0.0.8"
+  private val SDK_VERSION = "aptabase-kotlin@0.0.9"
   private val SESSION_TIMEOUT: Long = TimeUnit.HOURS.toMillis(1)
   private var appKey: String? = null
   private var sessionId = UUID.randomUUID()
