@@ -3,7 +3,7 @@
 > Open-source, privacy-first analytics SDK for Android apps. GDPR-compliant, no cookies, no personal data collection.
 
 Package: `com.github.aptabase:aptabase-kotlin`
-Install: `implementation("com.github.aptabase:aptabase-kotlin:0.0.8")`
+Install: `implementation("com.github.aptabase:aptabase-kotlin:0.0.9")`
 Repo: https://github.com/aptabase/aptabase-kotlin
 
 ## Overview
@@ -34,7 +34,7 @@ dependencyResolutionManagement {
 Add the dependency in your module-level `build.gradle.kts`:
 
 ```kotlin
-implementation("com.github.aptabase:aptabase-kotlin:0.0.8")
+implementation("com.github.aptabase:aptabase-kotlin:0.0.9")
 ```
 
 ## Initialization
@@ -50,13 +50,17 @@ class MyApplication : Application() {
 }
 ```
 
-For self-hosted instances, pass `InitOptions`:
+Pass `InitOptions` to customize behavior:
 
 ```kotlin
 Aptabase.instance.initialize(
     applicationContext,
     "A-SH-1234567890",
-    InitOptions(host = "https://your-self-hosted-instance.com")
+    InitOptions(
+        host = "https://your-self-hosted-instance.com",  // For self-hosted Aptabase
+        trackingMode = TrackingMode.asRelease,            // Force release mode
+        appVersion = "2.0.0"                              // Override the app version
+    )
 )
 ```
 
@@ -87,7 +91,9 @@ Aptabase.instance.trackEvent("purchase_completed",
 
 ## Configuration
 
-- `InitOptions(host: String?)` — set `host` for self-hosted Aptabase instances. Required when using `A-SH-*` app keys.
+- `host` — Custom server URL for self-hosted Aptabase instances. Required when using `A-SH-*` app keys.
+- `trackingMode` — `TrackingMode.readFromEnvironment` (default), `TrackingMode.asDebug`, or `TrackingMode.asRelease`
+- `appVersion` — Override the app version reported with events (default: read from app package info)
 - Sessions auto-rotate after 1 hour of inactivity.
 - Events are dispatched on a background thread pool (5 threads).
 
@@ -96,7 +102,7 @@ Aptabase.instance.trackEvent("purchase_completed",
 - Android only (uses `android.content.Context` for initialization)
 - Requires an `Application` subclass for initialization
 - Uses `HttpURLConnection` for network requests (no external HTTP dependencies)
-- Debug mode is detected automatically from `ApplicationInfo.FLAG_DEBUGGABLE`
+- Debug mode is detected automatically from `ApplicationInfo.FLAG_DEBUGGABLE` (overridable via `trackingMode`)
 - Collects only: OS version, locale, app version, build number, device model
 
 ## Cross-Discovery
