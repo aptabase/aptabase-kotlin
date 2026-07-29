@@ -20,10 +20,10 @@ Aptabase is an open-source, privacy-first analytics platform. This SDK integrate
 
 Starting with version `0.1.0`:
 
-- Kotlin 2.3 or newer is officially supported
+- Only Kotlin 2.3 or newer is officially supported
 - The consuming project must use `compileSdk` 28 or newer
 - The minimum supported Android version remains API level 16
-- Projects using older Kotlin or Android build toolchains can continue using Aptabase Kotlin `0.0.8`
+- Projects based on older Kotlin or Android build toolchains can continue using version `0.0.8`
 
 ## Installation
 

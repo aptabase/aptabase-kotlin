@@ -6,17 +6,7 @@ Instrument your apps with Aptabase, an Open Source, Privacy-First and, Simple An
 
 ## Setup
 
-### Requirements
-
-Starting with version `0.1.0`:
-
-- Kotlin 2.3 or newer is officially supported.
-- Your project must compile against Android API level 28 or newer.
-- The minimum supported Android version remains API level 16.
-
-Projects that cannot meet these requirements can continue using `0.0.8`.
-
-Add the JitPack repository in `settings.gradle.kts` file:
+**1.** Add the JitPack repository in `settings.gradle.kts` file:
 
 ```kotlin
 dependencyResolutionManagement {
@@ -29,13 +19,19 @@ dependencyResolutionManagement {
 }
 ```
 
-Add the dependency to your module-level `build.gradle.kts` file:
+**2.** Add the dependency to your module-level `build.gradle.kts` file.
 
 ```kotlin
     implementation("com.github.aptabase:aptabase-kotlin:0.1.0")
 ```
 
-If you don't already have an `Application` class, create one. Then, initialize the Aptabase object inside your application class:
+> [!WARNING]
+> Starting with version `0.1.0` only Kotlin 2.3 or newer is officially supported.
+> Also, Your project must compile against Android API level 28 or newer.
+>
+> Projects that cannot meet these requirements can continue using `0.0.8`.
+
+**3.** If you don't already have an `Application` class, create one. Then, initialize the Aptabase object inside your application class:
 
 ```kotlin
 private const val APTABASE_KEY = "YOUR_APP_KEY"
