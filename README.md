@@ -27,7 +27,7 @@ dependencyResolutionManagement {
 
 > [!WARNING]
 > Starting with version `0.1.0` only Kotlin 2.3 or newer is officially supported.
-> Also, Your project must compile against Android API level 28 or newer.
+> Your project must also use Android Gradle Plugin 8.2.2 or newer.
 >
 > Projects that cannot meet these requirements can continue using `0.0.8`.
 

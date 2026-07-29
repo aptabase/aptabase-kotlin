@@ -19,7 +19,8 @@ android {
         buildConfigField("String", "SDK_VERSION", "\"aptabase-kotlin@$sdkVersion\"")
 
         aarMetadata {
-            minCompileSdk = 28
+            minAgpVersion = "8.2.2"
+            minCompileSdk = 16
         }
 
         consumerProguardFiles("consumer-rules.pro")
