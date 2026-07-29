@@ -1,17 +1,18 @@
-import org.gradle.api.publish.maven.MavenPublication
-
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     id("maven-publish")
 }
 
 android {
     namespace = "com.aptabase"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 16
+
+        aarMetadata {
+            minCompileSdk = 28
+        }
 
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -31,8 +32,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    publishing {
+        singleVariant("release")
     }
 }
 
