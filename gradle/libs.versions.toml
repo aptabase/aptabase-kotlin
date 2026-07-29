@@ -1,0 +1,16 @@
+[versions]
+agp = "9.2.1"
+androidx-appcompat = "1.6.1"
+androidx-constraintlayout = "2.1.4"
+kotlin-gradle-plugin = "2.3.10"
+material = "1.11.0"
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+google-material = { module = "com.google.android.material:material", version.ref = "material" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-gradle-plugin" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }

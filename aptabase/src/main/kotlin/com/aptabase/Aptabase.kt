@@ -20,8 +20,7 @@ import java.util.concurrent.Executors
 data class InitOptions(val host: String? = null)
 
 class Aptabase private constructor() {
-  private val SDK_VERSION = "aptabase-kotlin@0.0.8"
-  private val SESSION_TIMEOUT: Long = TimeUnit.HOURS.toMillis(1)
+  private val sessionTimeout: Long = TimeUnit.HOURS.toMillis(1)
   private var appKey: String? = null
   private var sessionId = UUID.randomUUID()
   private var env: EnvironmentInfo? = null
@@ -55,12 +54,12 @@ class Aptabase private constructor() {
     env = EnvironmentInfo.get(context)
   }
 
-  fun trackEvent(eventName: String, props: Map<String, Any> = emptyMap<String, Any>()) {
+  fun trackEvent(eventName: String, props: Map<String, Any> = emptyMap()) {
     appKey?.let { appKey ->
       env?.let { env ->
         apiURL?.let { apiURL ->
           val now = Date()
-          if (now.time - lastTouched.time > SESSION_TIMEOUT) {
+          if (now.time - lastTouched.time > sessionTimeout) {
             sessionId = UUID.randomUUID()
           }
 
@@ -78,7 +77,7 @@ class Aptabase private constructor() {
                 "locale" to env.locale,
                 "appVersion" to env.appVersion,
                 "appBuildNumber" to env.appBuildNumber,
-                "sdkVersion" to SDK_VERSION,
+                "sdkVersion" to BuildConfig.SDK_VERSION,
                 "deviceModel" to env.deviceModel
               ),
               "props" to props

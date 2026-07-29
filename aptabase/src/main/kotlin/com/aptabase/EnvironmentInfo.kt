@@ -3,7 +3,7 @@ package com.aptabase
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
-import java.util.*
+import java.util.Locale
 
 data class EnvironmentInfo(
     var isDebug: Boolean = false,
