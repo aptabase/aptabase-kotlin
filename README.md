@@ -6,6 +6,16 @@ Instrument your apps with Aptabase, an Open Source, Privacy-First and, Simple An
 
 ## Setup
 
+### Requirements
+
+Starting with version `0.1.0`:
+
+- Kotlin 2.3 or newer is officially supported.
+- Your project must compile against Android API level 28 or newer.
+- The minimum supported Android version remains API level 16.
+
+Projects that cannot meet these requirements can continue using `0.0.8`.
+
 Add the JitPack repository in `settings.gradle.kts` file:
 
 ```kotlin

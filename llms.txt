@@ -16,6 +16,15 @@ Aptabase is an open-source, privacy-first analytics platform. This SDK integrate
 - All tracking is non-blocking and runs on a background thread pool
 - No events are tracked automatically — you must call trackEvent manually
 
+## Requirements
+
+Starting with version `0.1.0`:
+
+- Kotlin 2.3 or newer is officially supported
+- The consuming project must use `compileSdk` 28 or newer
+- The minimum supported Android version remains API level 16
+- Projects using older Kotlin or Android build toolchains can continue using Aptabase Kotlin `0.0.8`
+
 ## Installation
 
 Add the JitPack repository in your `settings.gradle.kts`:
