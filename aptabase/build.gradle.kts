@@ -3,12 +3,20 @@ plugins {
     id("maven-publish")
 }
 
+val sdkVersion = "0.1.0"
+version = sdkVersion
+
 android {
     namespace = "com.aptabase"
     compileSdk = 37
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = 16
+        buildConfigField("String", "SDK_VERSION", "\"aptabase-kotlin@$sdkVersion\"")
 
         aarMetadata {
             minCompileSdk = 28
@@ -44,7 +52,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.aptabase"
                 artifactId = "aptabase-kotlin"
-                version = "0.0.8"
+                version = project.version.toString()
             }
         }
     }
