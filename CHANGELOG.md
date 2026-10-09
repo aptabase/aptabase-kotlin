@@ -1,3 +1,9 @@
+## 0.1.0
+
+* Compile the library against API level 37 (Android 17) — fixes #13
+* Upgrade the build toolchain to Android Gradle Plugin 9.4.1 and Gradle 9.6.1, using AGP's built-in Kotlin support (Kotlin stdlib 2.2)
+* Consuming apps do not need to raise their own `compileSdk`; `minSdk` 16 is still supported
+
 ## 0.0.9
 
 * Add `trackingMode` to `InitOptions` to force debug or release event tracking
