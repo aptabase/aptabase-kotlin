@@ -1,3 +1,8 @@
+## 0.0.9
+
+* Add `trackingMode` to `InitOptions` to force debug or release event tracking
+* Add `appVersion` to `InitOptions` to override the reported app version
+
 ## 0.0.8
 
 * Fix JitPack build
