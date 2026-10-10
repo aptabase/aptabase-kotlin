@@ -1,0 +1,216 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Cancel superseded runs on the same PR; never cancel a main build mid-release.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  GROUP_PATH: com/github/aptabase/aptabase-kotlin
+
+jobs:
+  build:
+    name: Build, lint and unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build, lint and run unit tests
+        run: ./gradlew build --no-daemon --stacktrace
+
+      - name: Publish to local Maven (same tasks JitPack runs)
+        run: ./gradlew publishToMavenLocal --no-daemon
+
+      - name: Verify published artifacts
+        run: |
+          VERSION=$(sed -nE "s/.*version = '([0-9]+\.[0-9]+\.[0-9]+)'.*/\1/p" aptabase/build.gradle)
+          DIR="$HOME/.m2/repository/$GROUP_PATH/$VERSION"
+          echo "Published version: $VERSION"
+          ls -la "$DIR"
+          test -f "$DIR/aptabase-kotlin-$VERSION.aar"
+          test -f "$DIR/aptabase-kotlin-$VERSION.pom"
+          echo "## Published artifacts ($VERSION)" >> "$GITHUB_STEP_SUMMARY"
+          ls "$DIR" | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload AAR and sample APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-outputs
+          path: |
+            aptabase/build/outputs/aar/*.aar
+            example/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Upload reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-reports
+          path: |
+            aptabase/build/reports/
+            example/build/reports/
+
+  instrumented:
+    name: Install sample app and run instrumented tests (API ${{ matrix.api-level }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [34]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Enable KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run instrumented tests on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          target: google_apis
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          # Builds and installs the example app (which depends on :aptabase), the
+          # library test APK, and runs both androidTest suites on the device.
+          script: ./gradlew connectedDebugAndroidTest --no-daemon --stacktrace
+
+      - name: Upload instrumented test results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-test-results-api${{ matrix.api-level }}
+          path: |
+            aptabase/build/reports/androidTests/
+            aptabase/build/outputs/androidTest-results/
+            example/build/reports/androidTests/
+            example/build/outputs/androidTest-results/
+
+  release:
+    name: Tag release and build on JitPack
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, instrumented]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Read library version
+        id: version
+        run: |
+          VERSION=$(sed -nE "s/.*version = '([0-9]+\.[0-9]+\.[0-9]+)'.*/\1/p" aptabase/build.gradle)
+          if [ -z "$VERSION" ]; then
+            echo "::error::Could not read the publication version from aptabase/build.gradle"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" > /dev/null; then
+            echo "Tag $VERSION already exists; version was not bumped, nothing to release."
+            echo "bumped=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Version $VERSION has no tag yet; releasing."
+            echo "bumped=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract release notes from CHANGELOG.md
+        if: steps.version.outputs.bumped == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Take the "## <version>" section up to the next "## " heading.
+          awk -v v="$VERSION" '
+            $0 == "## " v { on = 1; next }
+            on && /^## / { exit }
+            on { print }
+          ' CHANGELOG.md | sed -e '/./,$!d' > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "::warning::No CHANGELOG.md section found for $VERSION; using a default note."
+            echo "Release $VERSION" > release-notes.md
+          fi
+          cat release-notes.md
+
+      - name: Create tag and GitHub release
+        if: steps.version.outputs.bumped == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "$VERSION" \
+            --title "$VERSION" \
+            --notes-file release-notes.md \
+            --target "$GITHUB_SHA"
+
+      - name: Trigger JitPack build and wait for it
+        if: steps.version.outputs.bumped == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          BASE="https://jitpack.io/$GROUP_PATH/$VERSION"
+          echo "Giving JitPack a moment to see the new tag..."
+          sleep 30
+          # The first request for an artifact makes JitPack build the tag. JitPack holds
+          # the connection open while building, so allow a long timeout here.
+          echo "Requesting $BASE/aptabase-kotlin-$VERSION.pom"
+          curl -sSL --max-time 900 -o /dev/null -w "POM request: HTTP %{http_code}\n" \
+            "$BASE/aptabase-kotlin-$VERSION.pom" || true
+
+          for attempt in $(seq 1 20); do
+            CODE=$(curl -sIL -o /dev/null -w '%{http_code}' "$BASE/aptabase-kotlin-$VERSION.aar")
+            if [ "$CODE" = "200" ]; then
+              echo "JitPack build succeeded: $BASE/aptabase-kotlin-$VERSION.aar"
+              {
+                echo "## JitPack release $VERSION"
+                echo
+                echo "- Artifact: \`com.github.aptabase:aptabase-kotlin:$VERSION\`"
+                echo "- Build log: $BASE/build.log"
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            LOG=$(curl -sL "$BASE/build.log" || true)
+            if echo "$LOG" | grep -qE "BUILD FAILED|ERROR: No build artifacts found|Build failed"; then
+              echo "::error::JitPack build failed for $VERSION. Log tail:"
+              echo "$LOG" | tail -60
+              exit 1
+            fi
+            echo "Attempt $attempt: AAR not available yet (HTTP $CODE); retrying in 30s"
+            sleep 30
+          done
+
+          echo "::error::Timed out waiting for JitPack to publish $VERSION. Log tail:"
+          curl -sL "$BASE/build.log" | tail -60
+          exit 1
