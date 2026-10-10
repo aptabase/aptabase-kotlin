@@ -22,8 +22,12 @@ dependencyResolutionManagement {
 Add the dependency to your module-level `build.gradle.kts` file:
 
 ```kotlin
-    implementation("com.github.aptabase:aptabase-kotlin:0.0.9")
+    implementation("com.github.aptabase:aptabase-kotlin:0.1.0")
 ```
+
+> [!NOTE]
+> Starting with `0.1.0` the library is compiled against API level 37 (Android 17) and depends on Kotlin stdlib 2.2.
+> Your app still only needs `minSdk` 16 or higher, and Kotlin 1.9 or newer; it does not need to raise its own `compileSdk`.
 
 If you don't already have an `Application` class, create one. Then, initialize the Aptabase object inside your application class:
 

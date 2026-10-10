@@ -3,7 +3,7 @@
 > Open-source, privacy-first analytics SDK for Android apps. GDPR-compliant, no cookies, no personal data collection.
 
 Package: `com.github.aptabase:aptabase-kotlin`
-Install: `implementation("com.github.aptabase:aptabase-kotlin:0.0.9")`
+Install: `implementation("com.github.aptabase:aptabase-kotlin:0.1.0")`
 Repo: https://github.com/aptabase/aptabase-kotlin
 
 ## Overview
@@ -15,6 +15,12 @@ Aptabase is an open-source, privacy-first analytics platform. This SDK integrate
 - Only String and Int values are allowed as custom property values
 - All tracking is non-blocking and runs on a background thread pool
 - No events are tracked automatically — you must call trackEvent manually
+
+## Requirements
+
+- Minimum supported Android version: API level 16 (Android 4.1)
+- Consuming project must use Kotlin 1.9 or newer (the library ships with Kotlin stdlib 2.2)
+- The library is compiled against API level 37 (Android 17); the consuming app does not need to raise its own `compileSdk`
 
 ## Installation
 
@@ -34,7 +40,7 @@ dependencyResolutionManagement {
 Add the dependency in your module-level `build.gradle.kts`:
 
 ```kotlin
-implementation("com.github.aptabase:aptabase-kotlin:0.0.9")
+implementation("com.github.aptabase:aptabase-kotlin:0.1.0")
 ```
 
 ## Initialization
